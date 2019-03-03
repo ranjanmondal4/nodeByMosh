@@ -6,6 +6,9 @@ const schema = new mongoose.Schema({
         required: true,
         minlength: 5,
         maxlength: 100,
+        lowercase: true,
+        //uppercase: true,
+        trim: true
         //match: /pattern/
     },
     category: {
@@ -43,7 +46,9 @@ const schema = new mongoose.Schema({
             return this.isPublished;
         },
         min: 10,
-        max: 100
+        max: 100,
+        get: v => Math.round(v),
+        set: v => Math.round(v),
     }
 });
 

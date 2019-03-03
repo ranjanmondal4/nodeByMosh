@@ -14,5 +14,4 @@ router.post('/api/v1/course', function (req, res) {
     course.addCourse(req, res);
 });
 
-
 module.exports = router;
