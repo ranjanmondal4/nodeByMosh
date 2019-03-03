@@ -11,15 +11,15 @@ function addCourse(req, res){
     let data = req.body;
     let course = new Course({
         name: data.name,
+        category: data.category,
         author: data.author,
         tags: data.tags,
+        isPublished: data.isPublished,
         date: data.date,
-        isPublished: data.isPublished
+        price: data.price
     });
     createCourse(course)
-        .then(() =>  {
-            res.status(200).send(course);
-        })
+        .then(() =>  res.status(200).send(course))
         .catch(error => res.status(400).send(error));
 }
 
@@ -29,27 +29,42 @@ function addCourse(req, res){
  */
 async function createCourse(course){
     try {
-        course = await course.save();
+        return await course.save();
     } catch (error) {
         console.log('Error in creating new course ', error);
+        return Promise.reject(error);
     }
 }
 
+/**
+ * Fetches the list of courses through paginations
+ * 
+ * @param {Object} req - The request object
+ * @param {Object} res - The response object
+ */
 function getCourses(req, res) {
-   getCoursesByPagination(10)
-    .then(courses => res.status(200).send(courses))
-    .catch(error => res.status(400).send(error));
+   const pageNumber = parseInt(req.query.pageNumber);
+   const pageSize = parseInt(req.query.pageSize);
+   getCoursesByPagination(pageNumber, pageSize)
+        .then(courses => res.status(200).send(courses))
+        .catch(error => res.status(400).send(error));  
 }
 
-async function getCoursesByPagination(limit){
+/**
+ * Fetches courses from database by page number and pagesize
+ * 
+ * @param {*} pageNumber - The pagenumber like 1, 2, etc
+ * @param {*} pageSize - The number of elements in each page eg. 10
+ */
+async function getCoursesByPagination(pageNumber, pageSize){
      try {
-        const courses = await Course
+        return await Course
             .find({author: 'Mosh', isPublished: true})
-            .limit(limit)
+            .skip((pageNumber-1) * pageSize)
+            .limit(pageSize)
             .sort({name: 1})
             .select({name: 1, tags: 1});
-      //  return Promise.resolve(courses);
-      return Promise.reject(new Error('Custom Exception'));
+      //return Promise.reject(new Error('Custom Exception'));
      } catch (error) {
         console.log('Error in fetching courses ', error);
         return Promise.reject(error);
