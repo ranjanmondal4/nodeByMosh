@@ -12,20 +12,3 @@ router.post('/', function (req, res) {
 });
 
 module.exports = router;
-
-// function addCourse(req, res) {
-//     courseService.addCourse(req, res);
-// }
-
-// function getCourses(req, res) {
-//     courseService.getCourses(req, res);
-// }
-
-// module.exports.addCourse = addCourse;
-// module.exports.getCourses = getCourses;
-
-
-
-
-
-

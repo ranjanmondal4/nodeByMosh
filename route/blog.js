@@ -1,17 +1,28 @@
 const express = require('express');
 const router = express.Router();
+const blogService = require('../service/blog/blog')
+
 
 /**
- * get blogs
+ * Add blogs
  */
-router.get('/', function (req, res) {
-    //course.getCourses(req, res);
-    res.status(200).send('Reached here');
+router.post('/blog', function (req, res) {
+    blogService.addBlog(req, res);
 });
 
-// get balance by account
-router.post('/', function (req, res) {
-   // course.addCourse(req, res);
+/**
+ * Add blogs
+ */
+router.get('/blog', function (req, res) {
+    blogService.getBlogs(req, res);
+});
+
+
+/**
+ * Add author
+ */
+router.post('/author', function (req, res) {
+   blogService.addAuthor(req, res);
 });
 
 module.exports = router;
