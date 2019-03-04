@@ -1,19 +1,19 @@
 const express = require('express');
 const router = express.Router();
 const blogService = require('../service/blog/blog')
-
+const authorization = require('../middleware/authorization');
 
 /**
  * Add blogs
  */
-router.post('/blog', function (req, res) {
+router.post('/blog',function(req, res) {
     blogService.addBlog(req, res);
 });
 
 /**
- * Add blogs
+ * Get blogs
  */
-router.get('/blog', function (req, res) {
+router.get('/blog', authorization, function (req, res) {
     blogService.getBlogs(req, res);
 });
 
