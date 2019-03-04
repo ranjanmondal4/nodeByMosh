@@ -69,5 +69,41 @@ async function userLogin(req, res) {
     return res.header('x-auth-token', token).status(200).send({token: token});
 }
 
+async function getUser(req, res){
+    let data = req.user;
+
+    let user = await User.findById(data._id)
+                .select('-password');
+    if(!user) 
+        return res.status(401).send('Access Denied. Invalid Token');
+    
+    return res.status(200).send(user);
+}
+
+async function adminLogin(req, res) {
+    let data = req.body;
+    data = _.pick(data, ['email', 'password']);
+
+    let user = await User.findOne({
+        email: data.email, isAdmin: true
+    });
+    if (!user) {
+        return res.status(400).send('Email is not registered');
+    }
+
+    const validPassword = await bcrypt.compare(data.password, user.password);
+
+    if (!validPassword) {
+        return res.status(400).send('Please enter correct password');
+    }
+
+    //const token = await utility.getJwt({_id: user._id});
+    const token = user.generateAuthToken();
+    return res.header('x-auth-token', token).status(200).send({
+        token: token
+    });
+}
+
 module.exports.addUser = addUser;
 module.exports.userLogin = userLogin;
+module.exports.getUser = getUser;

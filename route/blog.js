@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const blogService = require('../service/blog/blog')
-const authorization = require('../middleware/authorization');
+const {authorization, admin} = require('../middleware/authorization');
 
 /**
  * Add blogs
@@ -13,7 +13,7 @@ router.post('/blog',function(req, res) {
 /**
  * Get blogs
  */
-router.get('/blog', authorization, function (req, res) {
+router.get('/blog', [authorization, admin], function (req, res) {
     blogService.getBlogs(req, res);
 });
 

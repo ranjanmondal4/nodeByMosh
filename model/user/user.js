@@ -22,13 +22,14 @@ const schema = new mongoose.Schema({
         type: String,
         minlength: 5,
         maxlength: 1024
-    }
+    },
+    isAdmin: Boolean
 });
 
 schema.methods.generateAuthToken = function(){
-    return jwt.sign({_id: this._id}, environment.jwtSecretKey, {
-        expiresIn: environment.jwtExpiresInSeconds
-    });
+    return jwt.sign({_id: this._id, isAdmin: this.isAdmin },
+        environment.jwtSecretKey,
+         { expiresIn: environment.jwtExpiresInSeconds });
 }
 const User = mongoose.model('User', schema);
 module.exports = User;

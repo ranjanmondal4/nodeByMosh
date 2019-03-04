@@ -5,9 +5,9 @@ const environment = require('../configuration/environment');
  * Middle function to authenticate private URLs by checking
  * token are valid or not.
  * 
- * @param {*} req - The Request Object
- * @param {*} res - The Response Object
- * @param {*} next - The next middleware in request processing chain
+ * @param {Object} req - The Request Object
+ * @param {Object} res - The Response Object
+ * @param {Object} next - The next middleware in request processing chain
  */
 function authorization (req, res, next) {
     const token = req.header('x-auth-token');
@@ -23,5 +23,20 @@ function authorization (req, res, next) {
         next();
     });
 }
+/**
+ * Middle ware function to authenticate whether user is admin or not.
+ * 
+ * @param {Object} req - The Request Object
+ * @param {Object} res - The Response Object
+ * @param {Object} next - The next middleware in request processing chain
+ */
+function adminAutorization(req, res, next) {
+    if (req.user && req.user.isAdmin){
+        next();
+    }else{
+        return res.status(403).send('Access Denied');
+    }
+}
 
-module.exports = authorization;
+module.exports.authorization = authorization;
+module.exports.admin = adminAutorization;

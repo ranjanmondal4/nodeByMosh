@@ -3,6 +3,7 @@ const router = express.Router();
 const courseService = require('../service/course/courseService');
 
 
+
 router.get('/', function (req, res) {
     courseService.getCourses(req, res);
 });
