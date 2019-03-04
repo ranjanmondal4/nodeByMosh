@@ -1,5 +1,8 @@
 const {User} = require('../../model/index');
-let _ = require('lodash');
+const _ = require('lodash');
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
+
 /**
  * Registers a new user.
  * 
@@ -14,14 +17,11 @@ async function addUser(req, res) {
     if (user)
         return res.status(400).send('User already registered with same email');
 
-    // user = new User({
-    //     name: data.name,
-    //     email: data.email,
-    //     password: data.password
-    // });
-
     user = new User(_.pick(data, ['name', 'email', 'password']));
-     
+    const salt = await bcrypt.genSaltSync(saltRounds);
+    const hash = await bcrypt.hashSync(user.password, salt);
+    user.password = hash;
+
     createUser(user)
         .then(() => 
             res.status(200).send(_.pick(user, ['_id','name', 'email'])))
@@ -41,22 +41,29 @@ async function createUser(user) {
     }
 }
 
-// async function findUserByEmail(email){
-//     try {
-//         return await User.findOne({
-//             email: data.email
-//         });
-//     } catch (error) {
-//         return Promise.reject(error);
-//     }
-// }
+/**
+ * Login method for user and on success provides token
+ * 
+ * @param {Object} req 
+ * @param {Object} res 
+ */
+async function userLogin(req, res) {
+    let data = req.body;
+    data = _.pick(data, ['email', 'password']);
 
-// function getPromiseRejection(error) {
-//     try {
-//         return Promise.reject(error);
-//     } catch (error) {
-//         return error
-//     }
-// }
+    let user = await User.findOne({email: data.email});
+    if(!user){
+        return res.status(400).send('Email is not registered');
+    }
+
+    const validPassword = await bcrypt.compare(data.password, user.password);
+
+    if(!validPassword){
+        return res.status(400).send('Please enter correct password');
+    }
+
+    return res.status(200).send({token: 'dsfdsfsfsf'});
+}
 
 module.exports.addUser = addUser;
+module.exports.userLogin = userLogin;
