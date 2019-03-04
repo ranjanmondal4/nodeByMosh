@@ -64,7 +64,8 @@ async function userLogin(req, res) {
         return res.status(400).send('Please enter correct password');
     }
 
-    const token = await utility.getJwt({_id: user._id});
+    //const token = await utility.getJwt({_id: user._id});
+    const token = user.generateAuthToken();
     return res.header('x-auth-token', token).status(200).send({token: token});
 }
 
