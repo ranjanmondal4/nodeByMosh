@@ -4,6 +4,8 @@ function getEnvironment () {
         case 'dev':
             environment.database = 'mongodb://127.0.0.1:27017/mosh';
             environment.port = 4050;
+            environment.jwtSecretKey = 'secret_key';
+            environment.jwtExpiresInSeconds = 300;
         break;
         case 'stag':
 

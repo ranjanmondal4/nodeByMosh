@@ -2,6 +2,8 @@ const {User} = require('../../model/index');
 const _ = require('lodash');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
+const utility = require('../../utility/utility');
+
 
 /**
  * Registers a new user.
@@ -42,7 +44,7 @@ async function createUser(user) {
 }
 
 /**
- * Login method for user and on success provides token
+ * Login method for user and on success provides JWT token
  * 
  * @param {Object} req 
  * @param {Object} res 
@@ -62,7 +64,8 @@ async function userLogin(req, res) {
         return res.status(400).send('Please enter correct password');
     }
 
-    return res.status(200).send({token: 'dsfdsfsfsf'});
+    const token = await utility.getJwt({_id: user._id});
+    return res.header('x-auth-token', token).status(200).send({token: token});
 }
 
 module.exports.addUser = addUser;
